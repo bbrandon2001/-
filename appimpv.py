@@ -17,13 +17,22 @@ st.title("Batch Gear Quality Inspector")
 st.write("Select multiple gear images from your folder to analyze an entire batch at once!")
 
 # --- Load the Model ---
+import joblib
+import streamlit as st
+
+MODEL_PATH = "gear_model.pkl"
+
 @st.cache_resource
 def load_model():
     try:
         model = joblib.load(MODEL_PATH)
         return model
     except FileNotFoundError:
-        return None
+        st.error(f"Model file not found: {MODEL_PATH}")
+        st.stop()
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        st.stop()
 
 model = load_model()
 
